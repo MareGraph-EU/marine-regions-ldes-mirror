@@ -69,7 +69,7 @@
                         "@type": "RepresentationConvertingStore",
                         "source": {
                             "@type": "LDESStore",
-                            "id": "${LDES_BASE_URL}${LDES_URL_PATH}",
+                            "id": "${LDES_MIRROR_BASE_URL}${LDES_MIRROR_URL_PATH}",
                             "base": {
                                 "@id": "urn:solid-server:default:variable:baseUrl"
                             },
@@ -83,7 +83,7 @@
                                     "prefix": "time-fragments",
                                     "view": {
                                         "@type": "SDSView",
-                                        "streamId": "${LDES_BASE_URL}${LDES_URL_PATH}",
+                                        "streamId": "${LDES_MIRROR_BASE_URL}${LDES_MIRROR_URL_PATH}",
                                         "repository": {
                                             "@id": "urn:solid-server:default:repository-${STORE_TYPE}"
                                         }
@@ -132,7 +132,7 @@
         },
         {
             "@id": "urn:solid-server:default:relative-path",
-            "valueRaw": "${LDES_URL_PATH}"
+            "valueRaw": "${LDES_MIRROR_URL_PATH}"
         }
     ]
 }

@@ -12,4 +12,4 @@ do
 done
 
 # Start the LDES server
- npx @solid/community-server -c ./config-ldes.json -b ${LDES_BASE_URL}
+exec npx @solid/community-server -c ./config-ldes.json -b ${LDES_MIRROR_BASE_URL}

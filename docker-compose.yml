@@ -1,0 +1,72 @@
+version: "3"
+services:
+  rdfc-pipeline:
+    container_name: rdfc-pipeline
+    build: ./pipeline
+    volumes:
+      - ./pipeline/state:/rdfc-pipeline/state
+    restart: always
+    env_file: .env
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - ldes
+    depends_on:
+      - redis
+  redis:
+    container_name: redis
+    image: redis/redis-stack-server:latest
+    volumes:
+      - ./datastore:/data
+    ports:
+      - 6379:6379
+    restart: always
+    env_file: .env
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - ldes
+  ldes-server:
+    container_name: ldes-server
+    build: ./ldes-server
+    restart: always
+    ports:
+      - 3000:3000
+    env_file: .env
+    healthcheck:
+      # Check if the server is up and running, can return 200 or 500 (outside identifier space, okay here)
+      test: "wget --server-response --spider --tries=1 http://localhost:3000 2>&1 | grep -E 'HTTP/1.1 (200|500)'"
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - ldes
+    depends_on:
+      - redis
+  varnish:
+    container_name: varnish
+    build: ./varnish
+    ports:
+      - "8080:80"
+    tmpfs:
+      - /var/lib/varnish:exec
+    env_file: .env  
+    networks:
+      - ldes
+    depends_on:
+      ldes-server:
+        condition: service_healthy
+networks:
+  ldes:
