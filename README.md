@@ -13,3 +13,13 @@ To republish the MR LDES, we define a data pipeline using the [RDF-Connect frame
 ## System components and architecture
 
 `TODO:` Diagram and description of pipeline components.
+
+## How to run it?
+
+This pipeline and the necessary data storage and interface components are containerized using Docker and can be executed altogether using `docker-compose` as follows:
+
+```bash
+$ docker-compose up --build 
+```
+
+The [`.env`](https://github.com/rdf-connect/marine-regions-ldes-mirror/blob/main/.env) file contains the main configuration variables to be set.
