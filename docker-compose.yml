@@ -1,4 +1,3 @@
-version: "3"
 services:
   rdfc-pipeline:
     container_name: rdfc-pipeline
