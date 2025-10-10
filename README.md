@@ -4,7 +4,7 @@ This repository contains the code and configuration to produce and publish a _mi
 
 The MR dataset is maintained and already published as a [Linked Data Event Stream (LDES)](https://w3id.org/ldes/specification) by VLIZ on <https://marineregions.org/feed>. However, our republishing of this dataset is only intended as an academic exercise to study alternative LDES data structures and their impact on replication efficiency. Also as a demonstrator of how a derived LDES may be generated and published.
 
-To republish the MR LDES, we define a data pipeline using the [RDF-Connect framework](https://github.com/rdf-connect) ([see here](https://ceur-ws.org/Vol-3830/paper1.pdf) for more information).
+To republish the MR LDES, we define a data pipeline using the [RDF-Connect framework](https://github.com/rdf-connect).
 
 ## What is different from the original?
 
