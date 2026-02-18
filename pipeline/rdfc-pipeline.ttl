@@ -57,11 +57,11 @@
   ];
   rdfc:ordered "ascending";
   # Poll mutable fragments every 15 seconds
-  rdfc:follow false;
+  rdfc:follow true;
   rdfc:interval 30000;
   rdfc:materialize false;
   rdfc:savePath "./state/ldes";
-  rdfc:after "2025-02-10T00:00:00Z"^^xsd:dateTime;
+  #rdfc:after "2025-02-10T00:00:00Z"^^xsd:dateTime;
   rdfc:fetch [
     rdfc:concurrent 1;
     rdfc:retry [
