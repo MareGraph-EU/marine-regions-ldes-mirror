@@ -1,4 +1,4 @@
 */**/node_modules
 datastore/dump.rdb
-pipeline/ldes-state.json
-pipeline/state/*.json
+pipeline/state/*
+!pipeline/state/.keep

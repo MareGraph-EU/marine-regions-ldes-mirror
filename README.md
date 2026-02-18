@@ -2,9 +2,9 @@
 
 This repository contains the code and configuration to produce and publish a _mirrored_ LDES for the [Marine Regions (MR) dataset](https://marineregions.org/).
 
-The MR dataset is maintained and already published as a [Linked Data Event Stream (LDES)](https://w3id.org/ldes/specification) by VLIZ on <https://marineregions.org/feed>. However, our republishing of this dataset is only intended as an academic exercise to study alternative LDES data structures and their impact on replication efficiency. Also as a demonstrator of how a derived LDES may be generated and published.
+The MR dataset is maintained and already published as a (Linked Data Event Stream (LDES))[https://w3id.org/ldes/specification] by VLIZ on <https://marineregions.org/feed>. However, our republishing of this dataset is only intended as an academic exercise to study alternative LDES data structures and their impact on replication efficiency. Also as a demonstrator of how a derived LDES may be generated and published.
 
-To republish the MR LDES, we define a data pipeline using the [RDF-Connect framework](https://github.com/rdf-connect).
+To republish the MR LDES, we define a data pipeline using the [RDF-Connect framework](https://rdf-connect.github.io/).
 
 ## What is different from the original?
 
@@ -22,4 +22,4 @@ This pipeline and the necessary data storage and interface components are contai
 $ docker-compose up --build 
 ```
 
-The [`.env`](https://github.com/rdf-connect/marine-regions-ldes-mirror/blob/main/.env) file contains the main configuration variables to be set.
+The [`.env`](https://github.com/MareGraph-EU/marine-regions-ldes-mirror/blob/main/.env) file contains the main configuration variables to be set.

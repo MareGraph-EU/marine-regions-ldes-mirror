@@ -1,12 +1,14 @@
-@prefix : <https://w3id.org/conn#>.
-@prefix js: <https://w3id.org/conn/js#>.
-@prefix rdfl: <https://w3id.org/rdf-lens/ontology#>.
-@prefix tree: <https://w3id.org/tree#>.
 @prefix owl: <http://www.w3.org/2002/07/owl#>.
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rdfc: <https://w3id.org/rdf-connect#>.
+@prefix rdfl: <https://w3id.org/rdf-lens/ontology#>.
+@prefix tree: <https://w3id.org/tree#>.
 @prefix dct: <http://purl.org/dc/terms/>.
 
-<> owl:imports <./node_modules/@rdfc/js-runner/ontology.ttl>,
+#########################################
+### Import runners and processors
+#########################################
+<> owl:imports <./node_modules/@rdfc/js-runner/index.ttl>,
   <./node_modules/@rdfc/file-utils-processors-ts/processors.ttl>,
   <./node_modules/ldes-client/processor.ttl>,
   <./node_modules/@rdfc/sds-processors-ts/configs/bucketizer.ttl>,
@@ -15,106 +17,96 @@
 #########################################
 # Channel definitions
 #########################################
+# Metadata channel from rdfc:GlobRead to rdfc:Bucketize
+<metadata1> a rdfc:Reader, rdfc:Writer.
 
-# Channel from js:GlobRead to js:Bucketize (metadata)
-[ ] a js:JsChannel;
-  :reader <metadata/reader>;
-  :writer <metadata/writer>.
+# Metadata channel from rdfc:Bucketize to rdfc:Ingest
+<metadata2> a rdfc:Reader, rdfc:Writer.
 
-<metadata/writer> a js:JsWriterChannel.
-<metadata/reader> a js:JsReaderChannel.
+# Data channel from rdfc:LdesClient to rdfc:Bucketize
+<rawMembers> a rdfc:Reader, rdfc:Writer.
 
-# Channel from js:Bucketize to js:Ingest (metadata)
-[ ] a js:JsChannel;
-  :reader <metadata/bucketized/reader>;
-  :writer <metadata/bucketized/writer>.
+# Channel from rdfc:Bucketize to rdfc:Ingest
+<bucketizedMembers> a rdfc:Reader, rdfc:Writer.
 
-<metadata/bucketized/writer> a js:JsWriterChannel.
-<metadata/bucketized/reader> a js:JsReaderChannel.
-
-# Channel from js:LdesClient to js:Bucketize
-[ ] a js:JsChannel;
-  :reader <raw-member/reader>;
-  :writer <raw-member/writer>.
-
-<raw-member/writer> a js:JsWriterChannel.
-<raw-member/reader> a js:JsReaderChannel.
-
-# Channel from js:Bucketize to js:Ingest
-[ ] a js:JsChannel;
-  :reader <bucketized/reader>;
-  :writer <bucketized/writer>.
-
-<bucketized/writer> a js:JsWriterChannel.
-<bucketized/reader> a js:JsReaderChannel.
+#########################################
+### Define the pipeline
+#########################################
+<> a rdfc:Pipeline;
+  rdfc:consistsOf [
+    rdfc:instantiates rdfc:NodeRunner;
+    rdfc:processor <globRead>, <bucketizer>, <ldesClient>, <ingestor>;
+  ].
 
 #########################################
 # Processor definitions
 #########################################
-
-# File reader processor for metadata input on js:Bucketize
-[ ] a js:GlobRead;
-  js:glob <./config/sds-metadata.ttl>;
-  js:output <metadata/writer>;
-  js:closeOnEnd "true"^^xsd:boolean.
+# File reader processor for metadata input on rdfc:Bucketize
+<globRead> a rdfc:GlobRead;
+  rdfc:glob "./config/sds-metadata.ttl";
+  rdfc:output <metadata1>;
+  rdfc:closeOnEnd "true"^^xsd:boolean.
 
 # Processor to read member events from a LDES
-[ ] a js:LdesClient;
-  js:output <raw-member/writer>;
-  js:url [
+<ldesClient> a rdfc:LdesClient;
+  rdfc:output <rawMembers>;
+  rdfc:url [
     a rdfl:EnvVariable;
     rdfl:envDefault <https://marineregions.org/feed>;
     rdfl:envKey "SOURCE_LDES_URL";
   ];
-  js:ordered "ascending";
-  js:follow true;
-  js:interval 30000; # Poll mutable fragments every minute (60000 ms)
-  js:materialize false;
-  js:savePath <./state/ldes-state.json>;
-  #js:after "2024-12-31T23:59:59Z"^^xsd:dateTime;
-  #js:shapeFile <./config/mr-geo-shape.ttl>; # Activate this local shape to extract members with their full geometry.
-  js:fetch [
-    js:concurrent 1;
-    js:retry [
-      js:code 429;
-      js:maxRetry 15;
+  rdfc:ordered "ascending";
+  # Poll mutable fragments every 15 seconds
+  rdfc:follow false;
+  rdfc:interval 30000;
+  rdfc:materialize false;
+  rdfc:savePath "./state/ldes";
+  rdfc:after "2025-02-10T00:00:00Z"^^xsd:dateTime;
+  rdfc:fetch [
+    rdfc:concurrent 1;
+    rdfc:retry [
+      rdfc:code 408, 425, 429, 500, 502, 503, 504;
+      rdfc:maxRetry 15;
     ];
   ];
-  js:streamId [ 
-	# We opt to make it the same, but this IRI may be different than the source LDES URL.
-	# It is used internally to identify the stream of data we operate on.
-	# It must match the IRI defined in the SDS metadata configuration.
-	a rdfl:EnvVariable;
-	rdfl:envDefault <https://marineregions.org/feed>;
-	rdfl:envKey "SOURCE_LDES_URL";
+  rdfc:sdsify true;
+  rdfc:streamId [
+    # We opt to make it the same, but this IRI may be different than the source LDES URL.
+    # It is used internally to identify the stream of data we operate on.
+    # It must match the IRI defined in the SDS metadata configuration.
+    a rdfl:EnvVariable;
+    rdfl:envDefault <https://marineregions.org/feed>;
+    rdfl:envKey "SOURCE_LDES_URL";
   ].
 
 # Processor to bucketize the data
-[ ] a js:Bucketize;
-  js:channels [
-    js:dataInput <raw-member/reader>;
-    js:dataOutput <bucketized/writer>;
-    js:metadataInput <metadata/reader>;
-    js:metadataOutput <metadata/bucketized/writer>;
+<bucketizer> a rdfc:Bucketize;
+  rdfc:channels [
+    rdfc:dataInput <rawMembers>;
+    rdfc:dataOutput <bucketizedMembers>;
+    rdfc:metadataInput <metadata1>;
+    rdfc:metadataOutput <metadata2>;
   ];
-  js:bucketizeStrategy ( [
+  rdfc:bucketizeStrategy ( [
     a tree:TimebasedFragmentation;
     tree:timestampPath dct:modified;
-    tree:maxSize 1000;
+    tree:maxSize 100;
     tree:k 4;
-    tree:minBucketSpan 3600; # 1 hour
+    # 1 hour
+    tree:minBucketSpan 3600;
   ] );
-  js:savePath <./state/bucketize-state.json>;
-  js:outputStreamId "${LDES_MIRROR_BASE_URL}${LDES_MIRROR_URL_PATH}".
+  rdfc:savePath "./state/bucketize-state.json";
+  rdfc:outputStreamId "${LDES_MIRROR_BASE_URL}${LDES_MIRROR_URL_PATH}".
 
 # Processor to persist the bucketized SDS stream into a data storage system
-[ ] a js:Ingest;
-  js:dataInput <bucketized/reader>;
-  js:metadataInput <metadata/bucketized/reader>;
-  js:database [
-    js:url "${STORE_TYPE}://${STORE_URL}";
-    js:metadata "MR_METADATA";
-    js:data "MR_DATA";
-    js:index "MR_INDEX";
+<ingestor> a rdfc:IngestSDS;
+  rdfc:dataInput <bucketizedMembers>;
+  rdfc:metadataInput <metadata2>;
+  rdfc:database [
+    a rdfc:DatabaseConfig;
+    rdfc:url "${STORE_TYPE}://${STORE_URL}";
+    rdfc:metadata "MR_METADATA";
+    rdfc:data "MR_DATA";
+    rdfc:index "MR_INDEX";
   ].
 

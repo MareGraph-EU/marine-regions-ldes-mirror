@@ -1,6 +1,6 @@
 # Varnish
 
-In this setup, we use [Varnish](https://github.com/varnishcache/varnish-cache) as a reverse proxy and HTTP cache for the LDES server. We also enable `brotli` (thanks to this [Varnish extension](https://code.uplex.de/uplex-varnish/libvfp-brotli) for Brotli) and `gzip` (supported natively by Varnish) compression for any RDF content. 
+In this setup, we use [Varnish](https://github.com/varnishcache/varnish-cache) as a reverse proxy and HTTP cache for the LDES server. We also enable `brotli` (thanks to this [Varnish extension](https://gitlab.com/uplex/varnish/libvfp-brotli.git) for Brotli) and `gzip` (supported natively by Varnish) compression for any RDF content. 
 
 ## Run with Docker
 
@@ -32,4 +32,4 @@ Use the environment variable `VARNISH_SIZE` to define the size of the cache.
 
 The host and port of the LDES server are defined with the `BACKEND_HOST` and the `BACKEND_PORT` environment variables.
 
-For more details on how Varnish is configured, check the [`default.vcl`](https://github.com/rdf-connect/marine-regions-ldes-mirror/blob/main/varnish/default.vcl) file.
+For more details on how Varnish is configured, check the [`default.vcl`](https://github.com/MareGraph-EU/marine-regions-ldes-mirror/blob/main/varnish/default.vcl) file.
