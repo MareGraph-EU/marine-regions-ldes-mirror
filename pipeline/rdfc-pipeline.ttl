@@ -56,7 +56,7 @@
     rdfl:envKey "SOURCE_LDES_URL";
   ];
   rdfc:ordered "ascending";
-  # Poll mutable fragments every 15 seconds
+  # Poll mutable fragments every 30 seconds
   rdfc:follow true;
   rdfc:interval 30000;
   rdfc:materialize false;
