@@ -67,6 +67,7 @@
     rdfc:retry [
       rdfc:code 408, 425, 429, 500, 502, 503, 504;
       rdfc:maxRetry 15;
+      rdfc:safe true;
     ];
   ];
   rdfc:sdsify true;

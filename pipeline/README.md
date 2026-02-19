@@ -32,6 +32,7 @@ docker run \
 -e LDES_MIRROR_URL_PATH=/marine-regions-mirror/ldes \
 -e STORE_TYPE=redis \
 -e STORE_URL=default:mypassword@[REDIS_IP]:6379 \
+-v ./state:/rdfc-pipeline/state \
 marine-regions-pipeline
 -
 ```
