@@ -18,8 +18,8 @@ docker run \
 -p 3000:3000 \
 -e STORE_TYPE=redis \
 -e STORE_URL=default:mypassword@localhost:6379 \
--e LDES_BASE_URL=http://localhost:8080 \
--e LDES_URL_PATH=/marine-regions-mirror/ldes \
+-e LDES_MIRROR_BASE_URL=http://localhost:8080 \
+-e LDES_MIRROR_URL_PATH=/marine-regions-mirror \
 ldes-server
 ```
 
@@ -31,7 +31,7 @@ docker run \
 -p 3000:3000 \
 -e STORE_TYPE=mongodb \
 -e STORE_URL=root:mypassword@localhost:27017/mr-ldes?authSource=admin \
--e LDES_BASE_URL=http://localhost:8080 \
--e LDES_URL_PATH=/marine-regions-mirror/ldes \
+-e LDES_MIRROR_BASE_URL=http://localhost:8080 \
+-e LDES_MIRROR_URL_PATH=/marine-regions-mirror \
 ldes-server
 ```

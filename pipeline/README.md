@@ -29,7 +29,7 @@ docker build -t rdfc-pipeline .
 docker run \
 -e SOURCE_LDES_URL=https://marineregions.org/feed \
 -e LDES_MIRROR_BASE_URL=http://localhost:8080 \
--e LDES_MIRROR_URL_PATH=/marine-regions-mirror/ldes \
+-e LDES_MIRROR_URL_PATH=/marine-regions-mirror \
 -e STORE_TYPE=redis \
 -e STORE_URL=default:mypassword@[REDIS_IP]:6379 \
 -v ./state:/rdfc-pipeline/state \

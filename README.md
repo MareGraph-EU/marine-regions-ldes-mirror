@@ -6,6 +6,8 @@ The MR dataset is maintained and already published as a (Linked Data Event Strea
 
 To republish the MR LDES, we define a data pipeline using the [RDF-Connect framework](https://rdf-connect.github.io/).
 
+An instance is currently published at <https://ldes.ilabt.imec.be/marine-regions-mirror>
+
 ## What is different from the original?
 
 - LDES structure: `TODO:` explain that we use a B+Tree-based fragmentation for higher replication efficiency and better traversability
