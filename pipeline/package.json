@@ -11,8 +11,8 @@
   "license": "MIT",
   "dependencies": {
     "@rdfc/file-utils-processors-ts": "^1.0.3",
-    "@rdfc/js-runner": "^3.0.2",
-    "@rdfc/orchestrator-js": "^2.0.1",
+    "@rdfc/js-runner": "^3.0.3",
+    "@rdfc/orchestrator-js": "^2.0.2",
     "@rdfc/sds-processors-ts": "^2.1.1",
     "@rdfc/sds-storage-writer-ts": "^2.0.0-alpha.2",
     "ldes-client": "^0.3.0"
